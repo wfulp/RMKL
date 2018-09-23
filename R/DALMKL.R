@@ -14,6 +14,8 @@
 #' @return alpha coeffiencents of the dual of MKL
 #' @return weight Estimated between kernel weight
 #' @return rho Estimated within kernel weight
+#' @useDynLib RMKL
+#' @importFrom Rcpp evalCpp
 #' @export
 SpicyMKL <- function(K, y, loss = 'hinge', C = .5, tolOuter = .01, tolInner = .000001, OuterMaxiter = 500, InnerMaxIter = 500, calpha = 10) {
   if (loss == 'hinge') {
@@ -30,6 +32,8 @@ SpicyMKL <- function(K, y, loss = 'hinge', C = .5, tolOuter = .01, tolInner = .0
 #' @param b intercept
 #' @param k0 the kernel cube needs prediction
 #' @return The predicted score
+#' @useDynLib RMKL
+#' @importFrom Rcpp evalCpp
 #' @export
 predict_Spicy <- function(alpha, b, k0) {
   predictspicy(alpha, b, k0)
