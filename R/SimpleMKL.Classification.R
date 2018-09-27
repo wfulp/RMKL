@@ -56,7 +56,7 @@ SimpleMKL.classification=function(k,outcome,penalty,tol=10^(-4),max.iters=1000){
   epsilon=1
   iters=0
   while(epsilon>tol&iters<max.iters&sum(gamma==1)==0){
-    tic()
+   # tic()
     iters=iters+1
     gamma_all[[iters]]=gamma
     kk=Reduce('+',mapply("*", k, gamma,SIMPLIFY = FALSE))
@@ -89,12 +89,12 @@ SimpleMKL.classification=function(k,outcome,penalty,tol=10^(-4),max.iters=1000){
     epsilon=max(gamma-innersol$gamma+step_opt$par*innersol$direction)
     gamma=innersol$gamma+step_opt$par*innersol$direction
     gamma=gamma/sum(gamma)
-    toc(log = TRUE, quiet = TRUE)
+    #toc(log = TRUE, quiet = TRUE)
   }
   gamma_all[[iters+1]]=gamma
-  log.lst <- tic.log(format = FALSE)
+ # log.lst <- tic.log(format = FALSE)
   j=match(primal(model)[(primal(model)>0)&(primal(model)<1)][1],primal(model))
   b=outcome[j]-sum(primal(model)*outcome*kk[,j])
-  tic.clearlog()
-  return(list('gamma'=gamma,'iters'=iters,'time'=sum(unlist(lapply(log.lst, function(x) x$toc - x$tic))),'alpha'=primal(model),'b'=b,'gamma_all'=gamma_all))
+  #tic.clearlog()
+  return(list('gamma'=gamma,'iters'=iters,'alpha'=primal(model),'b'=b,'gamma_all'=gamma_all))
 }
