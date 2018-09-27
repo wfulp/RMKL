@@ -25,7 +25,7 @@ SEMKL.regression=function(k,outcome,penalty,epsilon,tol=0.0001,max.iters=1000){
   m=length(k)
   gamma=rep(1/length(kernels),length(kernels))
   gamma_all=list()
-  tic()
+  #tic()
   while (max(delta)>tol && iters<max.iters){
     iters=iters+1
     gamma_all[[iters]]=gamma
@@ -39,8 +39,8 @@ SEMKL.regression=function(k,outcome,penalty,epsilon,tol=0.0001,max.iters=1000){
     gamma=fnorm/sum(fnorm)
     delta=abs(temp-gamma)
     }
-  toc(log=TRUE,quiet=TRUE)
-  time=tic.log(format=FALSE)[[1]]$toc-tic.log(format=FALSE)[[1]]$tic
+ # toc(log=TRUE,quiet=TRUE)
+  #time=tic.log(format=FALSE)[[1]]$toc-tic.log(format=FALSE)[[1]]$tic
   w.ipop=(var$alpha-var$alphastar)%*%kk
   R=which(penalty-var$alpha>10^(-7)&var$alpha>10^(-7))
   Rstar=which(penalty-var$alphastar>10^(-7)&var$alphastar>10^(-7))
@@ -48,7 +48,7 @@ SEMKL.regression=function(k,outcome,penalty,epsilon,tol=0.0001,max.iters=1000){
   b.up=(epsilon-data$y+w.ipop)[R]
   b.ipop=as.numeric(names(which.max(table(round(union(b.low,b.up),6)))))
   results=list("alpha"=var$alpha, "alpha.star"=var$alphastar, "gamma"=temp,
-                       "iters"=iters,"time"=time,'b'=b.ipop,'f'=w)
+                       "iters"=iters,'b'=b.ipop,'f'=w)
   return(results)
 }
 
