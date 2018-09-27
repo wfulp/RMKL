@@ -37,7 +37,7 @@ SEMKL.classification=function(k,outcome,penalty,tol=0.0001,max.iters=1000){
   m=length(k)
   gamma=rep(1/length(k),length(k))
   gamma_all=list()
-  tic()
+  #tic()
   while (max(delta)>tol && iters<max.iters){
     iters=iters+1
     gamma_all[[iters]]=gamma
@@ -51,11 +51,11 @@ SEMKL.classification=function(k,outcome,penalty,tol=0.0001,max.iters=1000){
     gamma=fnorm/sum(fnorm)
     delta=abs(temp-gamma)
   }
-  toc(log=TRUE,quiet=TRUE)
-  time=tic.log(format=FALSE)[[1]]$toc-tic.log(format=FALSE)[[1]]$tic
+  #toc(log=TRUE,quiet=TRUE)
+  #time=tic.log(format=FALSE)[[1]]$toc-tic.log(format=FALSE)[[1]]$tic
   j=match(alpha[(alpha>0)&(alpha<penalty*0.9999)][1],alpha)
   b=outcome[j]-sum(alpha*outcome*kk[,j])
   gamma_all[[iters+1]]=gamma
-  results=list("alpha"=alpha,"b"=b,"gamma"=temp,"iters"=iters,'time'=time,'gamma_all'=gamma_all)
+  results=list("alpha"=alpha,"b"=b,"gamma"=temp,"iters"=iters,'gamma_all'=gamma_all)
   return(results)
 }
