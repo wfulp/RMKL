@@ -9,7 +9,7 @@
 
 C.convert=function(K.train,DALMKL.model,C.DALMKL){
 norm=function(x,y){y%*%x%*%y}
-sum.norms=sum(sapply(1:length(K.train.), function(a){
+sum.norms=sum(sapply(1:length(K.train), function(a){
                  norm(K.train[[a]],DALMKL.model$alpha[,a])
             C=C.DALMKL*sum.norms
             return(C)
