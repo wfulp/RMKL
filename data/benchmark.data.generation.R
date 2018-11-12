@@ -9,7 +9,7 @@
 #; @return group which of the two groups an observation belongs to  
 #' @export 
 
-benchmark.data=function(n, mu, sigma){
+benchmark.data.generation=function(n, mu, sigma){
   group=function(n,mean,sigma){rmvnorm(n,mean,sigma)}
   g1=cbind(group(n,mu[1,], sigma[[1]]),rep(-1,n),rep(1,n))
   g2=cbind(group(n,mu[1,], sigma[[1]]),rep(-1,n),rep(2,n))
