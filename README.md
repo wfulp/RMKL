@@ -15,6 +15,7 @@ In order for RMKL to work properly, the following packages are required:
 
 # Examples 
 For our benchmark example, we have two groups which are drawn from a bivariate normal distribution where the mean of one groupis fixed and the group means shift to provide different amounts of overlap of the two groups.
+This example is meant to illustrate that each MKL implentation selects the correct kernel. For instance, as the hyperparameter gets smaller (using kernlab's parameterization) the resulting decision boundary is almost linear. On the other hand, as the hyperparameter gets larger then decision boundary becomes more jagged and circular. Further details of this are highlighted "Multiple-kernel learning for genomic data mining and prediction" on bioRvix doi: https://doi.org/10.1101/415950.
 
 ## Loading data
 ```{r}
