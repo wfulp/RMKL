@@ -8,3 +8,7 @@ install.packages("devtools")
 library(devtools)
 devtools::install_github("cwilso6/RMKL")
 ```
+#Requirements
+In order for RMKL to work properly, the following packages are required:
+*caret
+*kernlab
