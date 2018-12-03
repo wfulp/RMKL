@@ -8,7 +8,19 @@ install.packages("devtools")
 library(devtools)
 devtools::install_github("cwilso6/RMKL")
 ```
-#Requirements
+# Requirements
 In order for RMKL to work properly, the following packages are required:
-*caret
-*kernlab
+* caret
+* kernlab
+
+# Examples 
+For our benchmark example, we have two groups which are drawn from a bivariate normal distribution where the mean of one groupis fixed and the group means shift to provide different amounts of overlap of the two groups.
+
+## Loading data
+```{r}
+data(benchmark.data)
+# The data sets are organized in a a list. Each entry of the list is a 100x3 matrix with each row consisting of a x- and y- coordinate, and a group label (-1,1).
+#Below is a summary of the mean of each group for each mean structure.
+lapply(1:length(data), function(a) aggregate(x = data[[1]][,1:2], by=list(data[[1]][,3]), mean))
+```
+## Using RMKL
