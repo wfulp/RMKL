@@ -24,3 +24,52 @@ data(benchmark.data)
 lapply(1:length(data), function(a) aggregate(x = data[[1]][,1:2], by=list(data[[1]][,3]), mean))
 ```
 ## Using RMKL
+```{r}
+ data.mkl=data[[i]]
+ kernels=rep('radial',2)
+ sigma=c(2,1/20) 
+ degree=sapply(1:length(kernels), function(a) ifelse(kernels[a]=='p',2,0))
+ #Kernels.gen splts the data into a training and test set, and generates the desired kernel matrices.
+ #Here we generate two gaussisan kernel matrices with sigma hyperparameter 2 and 0.05
+ K=kernels.gen(data=data.mkl[,1:2],train.samples=train.samples,kernels=kernels,sigma=sigma,degree=degree,scale=rep(0,length(kernels)))
+ C=0.05 #Cost parameter for DALMKL
+ K.train=K$K.train
+ K.test=K$K.test
+  
+  # parameters set up
+  cri_outer = 0.01 # criterion for outer cycle, 0.01 is default by author
+  cri_inner = cri_outer/10000  #criterion for inner cycle, this ratio is default by author
+  calpha = 10 ### Lagrangian duality constraint parameter, must be positive, 10 is default by author
+  max_iter_outer = 500 # maximum number of iterations in outer cycle
+  max_iter_inner = 500 # maximum number of iterations in inner cycle
+  ytr=data.mkl[train.samples,3]
+  k.train=simplify2array(K.train) #Converts list of kernel matrices in to an array with is appropriate for C++ code
+  k.test=simplify2array(K.test)
+  
+  #Implement DALMKL with the hinge loss function
+  spicy_svmb1n=SpicySVM(k.train, ytr, C, cri_outer, cri_inner, max_iter_outer, max_iter_inner, calpha)
+  spicysvmb1n_results=predictspicy(spicy_svmb1n$alpha,spicy_svmb1n$b, k = k.test)
+  cm.DALMKL.svm=confusionMatrix(factor(sign(spicysvmb1n_results),levels=c(-1,1)), factor(data.mkl[-train.samples,3],levels=c(-1,1)))
+  cm.DALMKL.svm
+  
+  #Implement DALMKL with a logistic loss function
+  spicy_logib1n=SpicyLogit(k.train, ytr, C, cri_outer, cri_inner, max_iter_outer, max_iter_inner, calpha)
+  spicylogib1n_results=predictspicy(spicy_logib1n$alpha,spicy_logib1n$b, k = k.test)
+  cm.DALMKL.logi=confusionMatrix(factor(sign(spicylogib1n_results),levels=c(-1,1)), factor(data.mkl[-train.samples,3],levels=c(-1,1)))
+  cm.DALMKL.logi
+ 
+  #Convert C parameter from DALMKL implenetation to SimpleMKL and SEMKL implementation to make the four implementations comparible.
+  C_SEMKL=C.convert(K.train,spicy_logib1n$model,C)
+  
+  #Implement SimpleMKL
+  SimpleMKL.model=SimpleMKL.classification(k=K.train,data.mkl[train.samples,3], penalty=C_SEMKL)
+  cm.SimpleMKL=confusionMatrix(factor(prediction.Classification(SimpleMKL.model,ktest=K.test,data.mkl[train.samples,3])$predict,       levels=c(-1,1)),factor(data.mkl[-train.samples,3],levels=c(-1,1)))
+  cm.SimpleMKL
+  
+  #Implement SEMKL
+  SEMKL.model=SEMKL.classification(k=K.train,data.mkl[train.samples,3], penalty=C_SEMKL)
+  cm.SEMKL=confusionMatrix(factor(prediction.Classification(SEMKL.model,ktest=K.test,data.mkl[train.samples,3])$predict,
+  levels=c(-1,1)),factor(data.mkl[-train.samples,3],levels=c(-1,1)))
+  cm.SEMKL
+  
+  
