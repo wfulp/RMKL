@@ -123,4 +123,4 @@ filled.contour(domain,domain, matrix(predict.combined$predict,length(domain),len
                main='Classication Rule MKL', 
                plot.axes={points(data[[4]][,-3],col=data[[4]][,3]+3,pch=18,cex=1.5)})
 ```
-![MKL.plots](mkl.comp.pdf)
+![MKL.plots](mkl.comp.png)
