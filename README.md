@@ -73,4 +73,53 @@ lapply(1:length(data), function(a) aggregate(x = data[[a]][,1:2], by=list(data[[
   levels=c(-1,1)),factor(data.mkl[-train.samples,3],levels=c(-1,1)))
   cm.SEMKL
   
-  
+  ```{r}
+  #Selecting a plot in the middle to show the benefit of MKL over SVM
+plot(data[[4]][,-3],col=data[[4]][,3]+3,main='Benchmark Data',pch=19,xlab='X1', ylab='X2')
+
+#Using the radial kernel with both hyperparameter individually and then in a combined analysis
+C=100
+K=kernels.gen(data=data[[4]][,1:2],train.samples=train.samples,kernels=kernels,
+              sigma=sigma,degree=degree,scale=rep(0,length(kernels)))
+K.train=K$K.train
+K.test=K$K.test
+#MKL with only one candidate kernel is equivalent to SVM
+#SVM with radial hyperparameter 2
+rbf2=SEMKL.classification(k = list(K.train[[1]]),outcome = data[[4]][train.samples,3],penalty = C)
+
+#SVM with radial hyperparameter 1/20
+rbf.05=SEMKL.classification(k=list(K.train[[2]]),outcome = data[[4]][train.samples,3],penalty = C)
+kernels.gen(data=data[[4]][,1:2],train.samples=train.samples,kernels=kernels,sigma=sigma,degree=degree,scale=rep(0,length(kernels)))
+domain=seq(1,8,0.1)
+grid=cbind(c(replicate(length(domain), domain)),c(t(replicate(length(domain), domain))))
+predict.data=rbind(data[[4]][train.samples,1:2],grid)
+kernels.predict=kernels.gen(data=predict.data,train.samples=1:length(train.samples),kernels=kernels,
+            sigma=sigma,degree=degree,scale=rep(0,length(kernels)))
+
+predict2=prediction.Classification(rbf2, ktest = list(kernels.predict$K.test[[1]]),
+                          train.outcome = data[[4]][train.samples,3])$
+
+predict.05=prediction.Classification(rbf.05, ktest = list(kernels.predict$K.test[[2]]),
+                                   train.outcome = data[[4]][train.samples,3])
+
+#Contour plot of the predicted values using the model where a single kernel was used
+filled.contour(domain,domain, matrix(predict2$predict,length(domain),length(domain)),
+               col = colorRampPalette(c('indianred1','lightskyblue'))(2),
+               main='Classication Rule Hyperparameter=2', 
+               plot.axes={points(data[[4]][,-3],col=data[[4]][,3]+3,pch=18,cex=1.5)})
+
+
+filled.contour(domain,domain, matrix(predict.05$predict,length(domain),length(domain)),
+               col = colorRampPalette(c('indianred1','lightskyblue'))(2),
+               main='Classication Rule Hyperparameter=0.05',
+               plot.axes={points(data[[4]][,-3],col=data[[4]][,3]+3,pch=18,cex=1.5)})
+###################################################################################################
+#Use the optimal model with the combination of kernels
+
+predict.combined=prediction.Classification(SEMKL.model[[4]], ktest = kernels.predict$K.test,
+                                   train.outcome = data[[4]][train.samples,3])
+filled.contour(domain,domain, matrix(predict.combined$predict,length(domain),length(domain)),
+               col = colorRampPalette(c('indianred1','lightskyblue'))(2),
+               main='Classication Rule MKL', 
+               plot.axes={points(data[[4]][,-3],col=data[[4]][,3]+3,pch=18,cex=1.5)})
+```
