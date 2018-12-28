@@ -34,6 +34,6 @@ SEMKL.regression=function(k,outcome,penalty,epsilon,tol=0.0001,max.iters=1000){
   b.up=(epsilon-outcome+w.ipop)[R]
   b.ipop=as.numeric(names(which.max(table(round(union(b.low,b.up),6)))))
   results=list("alpha"=var$alpha, "alpha.star"=var$alphastar, "gamma"=temp,
-               "iters"=iters,'b'=b.ipop,'f'=w)
+               "iters"=iters,'b'=b.ipop,'f'=w.ipop)
   return(results)
 }
