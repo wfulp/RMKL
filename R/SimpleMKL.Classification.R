@@ -93,7 +93,7 @@ SimpleMKL.classification=function(k,outcome,penalty,tol=10^(-4),max.iters=1000){
   }
   gamma_all[[iters+1]]=gamma
  # log.lst <- tic.log(format = FALSE)
-  j=match(primal(model)[(primal(model)>0)&(primal(model)<1)][1],primal(model))
+  j=match(primal(model)[(primal(model)>0)&(primal(model)<penalty)][1],primal(model))
   b=outcome[j]-sum(primal(model)*outcome*kk[,j])
   #tic.clearlog()
   return(list('gamma'=gamma,'iters'=iters,'alpha'=primal(model),'b'=b,'gamma_all'=gamma_all))
