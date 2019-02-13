@@ -7,6 +7,7 @@ You can install RMKL from GitHub. If you already have a previous version of RMKL
 install.packages("devtools")
 library(devtools)
 devtools::install_github("cwilso6/RMKL")
+library(RMKL)
 ```
 # Requirements
 In order for RMKL to work properly, the following packages are required:
@@ -73,7 +74,6 @@ lapply(1:length(data), function(a) aggregate(x = data[[a]][,1:2], by=list(data[[
   levels=c(-1,1)),factor(data.mkl[-train.samples,3],levels=c(-1,1)))
   cm.SEMKL
   
-  ```{r}
   #Selecting a plot in the middle to show the benefit of MKL over SVM
 plot(data[[4]][,-3],col=data[[4]][,3]+3,main='Benchmark Data',pch=19,xlab='X1', ylab='X2')
 
